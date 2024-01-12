@@ -20,7 +20,6 @@ class Camera:
     def release(self):
         self.cameraInstance.release()
 
-
 def startEvent():
     global frame, frame_preview
     print("Started")
@@ -44,6 +43,11 @@ def scanButton():
             for i in range(len(col_qrData)):
                 if col_qrData[i] == qrData:
                     print(course_text_.format(qrData))
+                    x1 = int(x1) - coded_qr_padding
+                    y1 = int(y1) - coded_qr_padding
+                    x2 = int(x2) + coded_qr_padding
+                    y2 = int(y2) + coded_qr_padding
+                    cropped_qr = frame[y1:y2, x1:x2]
                     cv.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 10)
                     frame_preview = ImageTk.PhotoImage(Image.fromarray(frame))
                     camera_preview.configure(image=frame_preview)
@@ -51,20 +55,24 @@ def scanButton():
                     camera_preview.update()
 
                     
-                    name_text_view.configure(text=name_text_.format(col_lastName[i], col_firstName[i], col_middleName[i]))
+                    name_text_view.configure(text=name_text_.format(col_lastName[i],
+                                                                    col_firstName[i],
+                                                                    col_middleName[i]),
+                                             bg="#C93535",
+                                             fg="#ffffff")
                     name_text_view.update()
 
-                    year_text_view.configure(text=year_text_.format(col_year[i]))
+                    year_text_view.configure(text=year_text_.format(col_year[i]),
+                                            bg="#C93535",
+                                            fg="#ffffff")
                     year_text_view.update()
 
-                    course_text_view.configure(text=course_text_.format(col_course[i]))
+                    course_text_view.configure(text=course_text_.format(col_course[i]),
+                                               bg="#C93535",
+                                               fg="#ffffff")
                     course_text_view.update()
                     
-                    x1 = int(x1)
-                    y1 = int(y1)
-                    x2 = int(x2)
-                    y2 = int(y2)
-                    cropped_qr = frame[y1:y2, x1:x2]
+                    
                     cropped_qr = ImageTk.PhotoImage(Image.fromarray(cropped_qr))
                     captured_qr_view.configure(image=cropped_qr)
                     captured_qr_view.update()
@@ -72,25 +80,37 @@ def scanButton():
                     cv.waitKey(1500)
                     break
                 else:
-                    name_text_view.configure(text="")
+                    name_text_view.configure(text="INVALID",
+                                             fg="#ff1414",
+                                             bg="#000000")
                     name_text_view.update()
 
-                    year_text_view.configure(text="")
+                    year_text_view.configure(text="INVALID",
+                                             fg="#ff1414",
+                                             bg="#000000")
                     year_text_view.update()
 
-                    course_text_view.configure(text="")
+                    course_text_view.configure(text="INVALID",
+                                               fg="#ff1414",
+                                               bg="#000000")
                     course_text_view.update()
 
                     captured_qr_view.configure(image="")
                     captured_qr_view.update()
     except:
-        name_text_view.configure(text="")
+        name_text_view.configure(text="INVALID",
+                                 fg="#ff1414",
+                                 bg="#000000")
         name_text_view.update()
 
-        year_text_view.configure(text="")
+        year_text_view.configure(text="INVALID",
+                                 fg="#ff1414",
+                                 bg="#000000")
         year_text_view.update()
 
-        course_text_view.configure(text="")
+        course_text_view.configure(text="INVALID",
+                                   fg="#ff1414",
+                                   bg="#000000")
         course_text_view.update()
 
         captured_qr_view.configure(image="")
@@ -102,6 +122,7 @@ camera_list = {"Main Camera": 0,
 cameraIndex = camera_list.get("Main Camera")
 def_font = "Consolas"
 def_size = 30
+coded_qr_padding = 40
 
 name_text_ = "{}, {} {}"
 year_text_ = "{}"
