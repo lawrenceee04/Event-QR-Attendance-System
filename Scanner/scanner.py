@@ -81,7 +81,7 @@ def scanButton():
 
                     cv.waitKey(1500)
                     break
-                else:
+                elif i == len(col_qrData)-1 :
                     winsound.Beep(320, 250)
                     name_text_view.configure(text="INVALID",
                                              fg="#ff1414",
