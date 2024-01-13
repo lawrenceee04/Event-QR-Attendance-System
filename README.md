@@ -1,4 +1,4 @@
-An Event Ticketing System
+An Event QR Attendance System
 
 Generator
 Generates qr codes based on the first column and first row of a CSV file.
