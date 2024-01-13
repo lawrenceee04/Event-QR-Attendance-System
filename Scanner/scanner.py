@@ -50,6 +50,7 @@ def scanButton():
                     x2 = int(x2) + coded_qr_padding
                     y2 = int(y2) + coded_qr_padding
                     cropped_qr = frame[y1:y2, x1:x2]
+                    cropped_qr = cv.resize(cropped_qr, (int(window_width*0.186), int(window_width*0.186)))
                     cv.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 10)
                     frame_preview = ImageTk.PhotoImage(Image.fromarray(frame))
                     camera_preview.configure(image=frame_preview)
@@ -74,14 +75,18 @@ def scanButton():
                                                fg="#ffffff")
                     course_text_view.update()
                     
-                    
+                    ticket_valid_label.configure(text="TICKET VALID",
+                                              fg="#000000",
+                                              bg="#39ff53")
+                    ticket_valid_label.update()
+
                     cropped_qr = ImageTk.PhotoImage(Image.fromarray(cropped_qr))
                     captured_qr_view.configure(image=cropped_qr)
                     captured_qr_view.update()
 
                     cv.waitKey(1500)
                     break
-                elif i == len(col_qrData)-1 :
+                elif i == len(col_qrData)-1:
                     winsound.Beep(320, 250)
                     name_text_view.configure(text="INVALID",
                                              fg="#ff1414",
@@ -98,8 +103,10 @@ def scanButton():
                                                bg="#000000")
                     course_text_view.update()
 
-                    captured_qr_view.configure(image="")
-                    captured_qr_view.update()
+                    ticket_valid_label.configure(text="TICKET INVALID",
+                                               fg="#000000",
+                                               bg="#ff1414")
+                    ticket_valid_label.update()
     except:
         winsound.Beep(320, 250)
         name_text_view.configure(text="INVALID",
@@ -117,8 +124,10 @@ def scanButton():
                                    bg="#000000")
         course_text_view.update()
 
-        captured_qr_view.configure(image="")
-        captured_qr_view.update()
+        ticket_valid_label.configure(text="TICKET INVALID",
+                                  fg="#000000",
+                                  bg="#ff1414")
+        ticket_valid_label.update()
         print("Not found")
 
 camera_list = {"Main Camera": 0,
@@ -131,6 +140,7 @@ coded_qr_padding = 40
 name_text_ = "{}, {} {}"
 year_text_ = "{}"
 course_text_ = "{}"
+is_ticket_valid = "{}"
 
 qrScanner = QReader()
 videoCaptureQR = cv.VideoCapture(cameraIndex)
@@ -205,86 +215,118 @@ info_frame = tk.Frame(master=root,
 info_frame.grid(rowspan=2, row=0, column=1)
 info_frame.grid_propagate(False)
 # Information Frame Elements
-name_label = tk.Label(master=info_frame,
+
+name_frame = tk.Frame(master=info_frame,
+                      bg="#212121")
+name_frame.grid(row=0,
+                column=0,
+                columnspan=2,
+                sticky="w",
+                padx=window_width*0.026,
+                pady=window_height*0.0185)
+name_label = tk.Label(master=name_frame,
                       bg="#212121",
                       fg="#ffffff",                     
                       text="Name",
                       font=(def_font, def_size))
 name_label.grid(row=0,
-                columnspan=1,
+                column=0,
+                sticky="w")
+name_text_view = tk.Label(master=name_frame,
+                          bg="#C93535",
+                          fg="#ffffff",
+                          text="name",
+                          font=(def_font, def_size))
+name_text_view.grid(row=1,
+                    column=0,
+                    columnspan=2,
+                    sticky="w")
+
+year_frame = tk.Frame(master=info_frame,
+                      bg="#212121")
+year_frame.grid(row=1,
                 column=0,
                 sticky="w",
                 padx=window_width*0.026,
                 pady=window_height*0.0185)
-name_text_view = tk.Label(master=info_frame,
-                          bg="#C93535",
-                          fg="#ffffff",
-                          text=name_text_,
-                          font=(def_font, def_size))
-name_text_view.grid(row=1,
-                    columnspan=4,
-                    column=0,
-                    sticky="w",
-                    padx=window_width*0.026,
-                    pady=window_height*0.0185)
-
-year_label = tk.Label(master=info_frame,
+year_label = tk.Label(master=year_frame,
                       bg="#212121",
                       fg="#ffffff",
                       text="Year",
                       font=(def_font, def_size))
-year_label.grid(row=2,
-                columnspan=1,
+year_label.grid(row=0,
                 column=0,
-                sticky="w",
-                padx=window_width*0.026,
-                pady=window_height*0.0185)
-year_text_view = tk.Label(master=info_frame,
+                sticky="w")
+year_text_view = tk.Label(master=year_frame,
                           bg="#C93535",
                           fg="#ffffff",
-                          text=year_text_,
+                          text="year",
                           font=(def_font, def_size))
-year_text_view.grid(row=3,
-                    columnspan=4,
+year_text_view.grid(row=1,
                     column=0,
-                    sticky="w",
-                    padx=window_width*0.026,
-                    pady=window_height*0.0185)
+                    sticky="w")
 
-
-course_label = tk.Label(master=info_frame,
-                      bg="#212121",
-                      fg="#ffffff",
-                      text="Course",
-                      font=(def_font, def_size))
-course_label.grid(row=2,
-                columnspan=1,
+course_frame = tk.Frame(master=info_frame,
+                      bg="#212121")
+course_frame.grid(row=1,
                 column=1,
                 sticky="w",
                 padx=window_width*0.026,
                 pady=window_height*0.0185)
-course_text_view = tk.Label(master=info_frame,
+course_label = tk.Label(master=course_frame,
+                      bg="#212121",
+                      fg="#ffffff",
+                      text="Course",
+                      font=(def_font, def_size))
+course_label.grid(row=0,
+                column=0,
+                sticky="w")
+course_text_view = tk.Label(master=course_frame,
                           bg="#C93535",
                           fg="#ffffff",
-                          text=course_text_,
+                          text="course",
                           font=(def_font, def_size))
-course_text_view.grid(row=3,
-                    columnspan=3,
-                    column=1,
-                    sticky="w",
-                    padx=window_width*0.026,
-                    pady=window_height*0.0185)
+course_text_view.grid(row=1,
+                    column=0,
+                    sticky="w")
+
+captured_qr_frame = tk.Frame(master=info_frame,
+                             width=window_width*0.186,
+                             height=window_width*.186,
+                             bg="#212121")
+captured_qr_frame.grid(row=2,
+                       column=0,
+                       columnspan=2,
+                       padx=window_width*0.098,
+                       pady=window_height*0.0725,
+                       sticky="nsew")
+captured_qr_frame.grid_propagate(False)
+captured_qr_view = tk.Label(master=captured_qr_frame,
+                            bg="#212121")
+captured_qr_view.grid(row=0,
+                      column=0,
+                      sticky="nsew")
 
 
-captured_qr_view = tk.Label(master=info_frame,
-                      bg="#212121",
-                      fg="#ffffff")
-captured_qr_view.grid(row=4,
-                columnspan=4,
-                column=0,
-                sticky="news",
-                padx=window_width*0.1,
-                pady=window_height*0.1)
+ticket_valid_frame = tk.Frame(master=info_frame,
+                      bg="#212121")
+ticket_valid_frame.grid(row=3,
+                        column=0,
+                        columnspan=2,
+                        sticky="n",
+                        padx=window_width*0.026,
+                        pady=window_height*0.0185)
+ticket_valid_label = tk.Label(master=ticket_valid_frame,
+                              text=is_ticket_valid.format("TICKET STATUS"),
+                              bg="#C93535",
+                              fg="#ffffff",
+                              font=(def_font, def_size),
+                              padx=10,
+                              pady=10)
+ticket_valid_label.grid(row=0,
+                        column=0,
+                        sticky="n")
+ticket_valid_label.grid_propagate(False)
 
 startEvent()
 root.mainloop()
