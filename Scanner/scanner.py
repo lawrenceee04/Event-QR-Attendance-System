@@ -3,6 +3,7 @@ from qreader import QReader
 import pandas as pd
 import tkinter as tk
 from PIL import Image, ImageTk
+import winsound
 
 class Camera:
 
@@ -42,6 +43,7 @@ def scanButton():
             x1, y1, x2, y2 = qrScanned[1][0]['bbox_xyxy']
             for i in range(len(col_qrData)):
                 if col_qrData[i] == qrData:
+                    winsound.Beep(2740, 220)
                     print(course_text_.format(qrData))
                     x1 = int(x1) - coded_qr_padding
                     y1 = int(y1) - coded_qr_padding
@@ -80,6 +82,7 @@ def scanButton():
                     cv.waitKey(1500)
                     break
                 else:
+                    winsound.Beep(320, 250)
                     name_text_view.configure(text="INVALID",
                                              fg="#ff1414",
                                              bg="#000000")
@@ -98,6 +101,7 @@ def scanButton():
                     captured_qr_view.configure(image="")
                     captured_qr_view.update()
     except:
+        winsound.Beep(320, 250)
         name_text_view.configure(text="INVALID",
                                  fg="#ff1414",
                                  bg="#000000")
