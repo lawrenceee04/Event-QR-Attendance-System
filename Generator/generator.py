@@ -7,7 +7,7 @@ qr = qrcode.QRCode(
     box_size=10,
     border=2,
 )
-
+                                                  
 # File/Variable Names
 name = "QR Codes/qrCode{number}.jpg"
 
