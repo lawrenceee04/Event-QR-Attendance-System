@@ -84,7 +84,7 @@ def scanButton():
                     captured_qr_view.configure(image=cropped_qr)
                     captured_qr_view.update()
 
-                    cv.waitKey(1500)
+                    cv.waitKey(2000)
                     break
                 elif i == len(col_qrData)-1:
                     # winsound.Beep(320, 250)
