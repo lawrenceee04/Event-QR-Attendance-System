@@ -2,6 +2,7 @@ import cv2 as cv
 from qreader import QReader
 import pandas as pd
 import tkinter as tk
+import customtkinter as ctk
 from PIL import Image, ImageTk
 import winsound
 
@@ -61,23 +62,23 @@ def scanButton():
                     name_text_view.configure(text=name_text_.format(col_lastName[i],
                                                                     col_firstName[i],
                                                                     col_middleName[i]),
-                                             bg="#C93535",
-                                             fg="#ffffff")
+                                             fg_color="#C93535",
+                                             text_color="#ffffff")
                     name_text_view.update()
 
                     year_text_view.configure(text=year_text_.format(col_year[i]),
-                                            bg="#C93535",
-                                            fg="#ffffff")
+                                            fg_color="#C93535",
+                                            text_color="#ffffff")
                     year_text_view.update()
 
                     course_text_view.configure(text=course_text_.format(col_course[i]),
-                                               bg="#C93535",
-                                               fg="#ffffff")
+                                               fg_color="#C93535",
+                                               text_color="#ffffff")
                     course_text_view.update()
                     
                     ticket_valid_label.configure(text="TICKET VALID",
-                                              fg="#000000",
-                                              bg="#39ff53")
+                                              text_color="#000000",
+                                              fg_color="#39ff53")
                     ticket_valid_label.update()
 
                     cropped_qr = ImageTk.PhotoImage(Image.fromarray(cropped_qr))
@@ -89,44 +90,44 @@ def scanButton():
                 elif i == len(col_qrData)-1:
                     winsound.Beep(320, 250)
                     name_text_view.configure(text="INVALID",
-                                             fg="#ff1414",
-                                             bg="#000000")
+                                            text_color="#ff1414",
+                                             fg_color="#000000" )
                     name_text_view.update()
 
                     year_text_view.configure(text="INVALID",
-                                             fg="#ff1414",
-                                             bg="#000000")
+                                             text_color="#ff1414",
+                                             fg_color="#000000")
                     year_text_view.update()
 
                     course_text_view.configure(text="INVALID",
-                                               fg="#ff1414",
-                                               bg="#000000")
+                                               text_color="#ff1414",
+                                               fg_color="#000000")
                     course_text_view.update()
 
                     ticket_valid_label.configure(text="TICKET INVALID",
-                                               fg="#000000",
-                                               bg="#ff1414")
+                                               text_color="#000000",
+                                               fg_color="#ff1414")
                     ticket_valid_label.update()
     except:
         winsound.Beep(320, 250)
         name_text_view.configure(text="INVALID",
-                                 fg="#ff1414",
-                                 bg="#000000")
+                                 text_color="#ff1414",
+                                 fg_color="#000000")
         name_text_view.update()
 
         year_text_view.configure(text="INVALID",
-                                 fg="#ff1414",
-                                 bg="#000000")
+                                 text_color="#ff1414",
+                                 fg_color="#000000")
         year_text_view.update()
 
         course_text_view.configure(text="INVALID",
-                                   fg="#ff1414",
-                                   bg="#000000")
+                                   text_color="#ff1414",
+                                   fg_color="#000000")
         course_text_view.update()
 
         ticket_valid_label.configure(text="TICKET INVALID",
-                                  fg="#000000",
-                                  bg="#ff1414")
+                                  text_color="#000000",
+                                  fg_color="#ff1414")
         ticket_valid_label.update()
         print("Not found")
 
@@ -134,7 +135,7 @@ camera_list = {"Main Camera": 0,
                "OBS Virtual Camera": 1}
 cameraIndex = camera_list.get("Main Camera")
 def_font = "Consolas"
-def_size = 30
+def_size = 40
 coded_qr_padding = 40
 
 name_text_ = "{}, {} {}"
@@ -155,6 +156,7 @@ col_year = df["year"]
 col_course = df["course"]
 col_contactNumber = df["contactNumber"]
 
+
 # User Interface
 window_width = 1920
 window_height = 1080
@@ -163,14 +165,14 @@ root.title('Event QR Attendance System')
 root.maxsize(window_width, window_height)
 root.attributes("-fullscreen", True)
 root.config(bg="#212121")
-button_sizeimg = tk.PhotoImage(width=1, height=1) 
+button_sizeimg = tk.PhotoImage(width=1, height=1)
+
 
 # Camera Frame
-camera_frame = tk.Frame(master=root, 
+camera_frame = ctk.CTkFrame(master=root, 
                         width=window_width*0.482, 
                         height=window_height*0.6025, 
-                        bg="#2d2e2e")
-# camera_frame.pack(side="left", fill="both", expand=True)
+                        fg_color="#2d2e2e")
 camera_frame.grid(row=0, column=0)
 camera_frame.grid_propagate(False)
 # Camera Frame Elements
@@ -181,119 +183,119 @@ camera_preview.place(relx=0.5,
                      anchor="center")
 
 
-scan_frame = tk.Frame(master=root, 
+scan_frame = ctk.CTkFrame(master=root, 
                       width=window_width*0.482, 
                       height=window_height*0.3975, 
-                      bg="#2d2e2e")
-# scan_frame.pack(side="left", fill="both", expand=True)
+                      fg_color="#2d2e2e")
 scan_frame.grid(row=1, column=0)
 scan_frame.grid_propagate(False)
-scan_button = tk.Button(scan_frame,
-                        bg="#0e0e0f",
-                        fg="#d9d9d9",
-                        font=(def_font, def_size), 
-                        text="Scan", 
-                        image=button_sizeimg,
-                        compound="left",
-                        width=window_width*.216, 
-                        height=window_height*.0975, 
-                        command=scanButton)
+scan_button = ctk.CTkButton(scan_frame,
+                            text_color="#000000",
+                            fg_color="#d9d9d9",
+                            font=(def_font, 60),
+                            text="Scan",
+                            hover_color="#777777",
+                            compound="left", 
+                            command=scanButton)
 scan_button.place(relheight=0.245,
                   relwidth=0.448,
                   relx=0.5,
                   rely=0.3,
                   anchor="center")
-# scan_button.grid(row=0, column=0)
 
 
 # Information Frame
-info_frame = tk.Frame(master=root, 
+info_frame = ctk.CTkFrame(master=root, 
                       width=window_width*0.518,
                       height=window_height*1.0,
-                      bg="#212121")
+                      fg_color="#212121")
 # info_frame.pack(side="left", fill="both", expand=True)
 info_frame.grid(rowspan=2, row=0, column=1)
 info_frame.grid_propagate(False)
-# Information Frame Elements
 
-name_frame = tk.Frame(master=info_frame,
-                      bg="#212121")
+
+# Information Frame Elements
+name_frame = ctk.CTkFrame(master=info_frame,
+                      fg_color="#212121")
 name_frame.grid(row=0,
                 column=0,
                 columnspan=2,
                 sticky="w",
                 padx=window_width*0.026,
                 pady=window_height*0.0185)
-name_label = tk.Label(master=name_frame,
-                      bg="#212121",
-                      fg="#ffffff",                     
+name_label = ctk.CTkLabel(master=name_frame,
+                      fg_color="#212121",
+                      text_color="#ffffff",                     
                       text="Name",
                       font=(def_font, def_size))
 name_label.grid(row=0,
                 column=0,
                 sticky="w")
-name_text_view = tk.Label(master=name_frame,
-                          bg="#C93535",
-                          fg="#ffffff",
-                          text="name",
+name_text_view = ctk.CTkLabel(master=name_frame,
+                          fg_color="#C93535",
+                          text_color="#ffffff",
+                          text="",
                           font=(def_font, def_size))
 name_text_view.grid(row=1,
                     column=0,
                     columnspan=2,
                     sticky="w")
 
-year_frame = tk.Frame(master=info_frame,
-                      bg="#212121")
+
+year_frame = ctk.CTkFrame(master=info_frame,
+                      fg_color="#212121")
 year_frame.grid(row=1,
                 column=0,
                 sticky="w",
                 padx=window_width*0.026,
                 pady=window_height*0.0185)
-year_label = tk.Label(master=year_frame,
-                      bg="#212121",
-                      fg="#ffffff",
+year_label = ctk.CTkLabel(master=year_frame,
+                      fg_color="#212121",
+                      text_color="#ffffff",                     
                       text="Year",
                       font=(def_font, def_size))
 year_label.grid(row=0,
                 column=0,
                 sticky="w")
-year_text_view = tk.Label(master=year_frame,
-                          bg="#C93535",
-                          fg="#ffffff",
-                          text="year",
+year_text_view = ctk.CTkLabel(master=year_frame,
+                          fg_color="#C93535",
+                          text_color="#ffffff",
+                          text="",
                           font=(def_font, def_size))
 year_text_view.grid(row=1,
                     column=0,
                     sticky="w")
 
-course_frame = tk.Frame(master=info_frame,
-                      bg="#212121")
+
+course_frame = ctk.CTkFrame(master=info_frame,
+                      fg_color="#212121")
 course_frame.grid(row=1,
                 column=1,
                 sticky="w",
                 padx=window_width*0.026,
                 pady=window_height*0.0185)
-course_label = tk.Label(master=course_frame,
-                      bg="#212121",
-                      fg="#ffffff",
+course_label = ctk.CTkLabel(master=course_frame,
+                      fg_color="#212121",
+                      text_color="#ffffff",                     
                       text="Course",
                       font=(def_font, def_size))
 course_label.grid(row=0,
                 column=0,
                 sticky="w")
-course_text_view = tk.Label(master=course_frame,
-                          bg="#C93535",
-                          fg="#ffffff",
-                          text="course",
+course_text_view = ctk.CTkLabel(master=course_frame,
+                          fg_color="#C93535",
+                          text_color="#ffffff",
+                          text="",
                           font=(def_font, def_size))
 course_text_view.grid(row=1,
                     column=0,
                     sticky="w")
 
-captured_qr_frame = tk.Frame(master=info_frame,
+
+captured_qr_frame = ctk.CTkFrame(master=info_frame,
                              width=window_width*0.186,
                              height=window_width*.186,
-                             bg="#212121")
+                             fg_color="#212121")
 captured_qr_frame.grid(row=2,
                        column=0,
                        columnspan=2,
@@ -308,25 +310,27 @@ captured_qr_view.grid(row=0,
                       sticky="nsew")
 
 
-ticket_valid_frame = tk.Frame(master=info_frame,
-                      bg="#212121")
+ticket_valid_frame = ctk.CTkFrame(master=info_frame,
+                      fg_color="#bdb1b1")
 ticket_valid_frame.grid(row=3,
                         column=0,
                         columnspan=2,
                         sticky="n",
                         padx=window_width*0.026,
                         pady=window_height*0.0185)
-ticket_valid_label = tk.Label(master=ticket_valid_frame,
-                              text=is_ticket_valid.format("TICKET STATUS"),
-                              bg="#C93535",
-                              fg="#ffffff",
-                              font=(def_font, def_size),
-                              padx=10,
-                              pady=10)
+
+ticket_valid_label = ctk.CTkLabel(master=ticket_valid_frame,
+                      fg_color="#C93535",
+                      text_color="#ffffff",                     
+                      text="TICKET STATUS",
+                      font=(def_font, def_size),
+                      padx=10,
+                      pady=10,
+                      anchor="center")
 ticket_valid_label.grid(row=0,
                         column=0,
                         sticky="n")
-ticket_valid_label.grid_propagate(False)
+# ticket_valid_label.grid_propagate(False)
 
 startEvent()
 root.mainloop()
