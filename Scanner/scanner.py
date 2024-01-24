@@ -25,21 +25,110 @@ class Camera:
 def startEvent():
     global frame, frame_preview
     print("Started")
+    skip_step = 0
     # OpenCV running
     while qrCamera.running():
         frame = cv.cvtColor(qrCamera.frame(),cv.COLOR_BGR2RGB)
-        # frame = cv.resize(frame, (left_frame_width, left_frame_height))
-        frame = frame[0:480, 80:560]
+        frame = frame[0:480, 0:640]
         frame_preview = ImageTk.PhotoImage(Image.fromarray(frame))
         camera_preview.configure(image=frame_preview)
         camera_preview.image=frame_preview
         camera_preview.update()
 
+        # Optimized version HAHAHA charot
+        if skip_step == 30:
+            detections = qrScanner.detect(frame, is_bgr=False)
+            for detection in detections:
+                confidence = detection.get('confidence')
+            skip_step = 0
+        elif skip_step >= 0:
+            skip_step += 1
+
+        # Sluggish in displaying frames
+        # detections = qrScanner.detect(frame, is_bgr=False)
+        # for detection in detections:
+        #     confidence = detection.get('confidence')
+
+        try:
+            if confidence >= .60:
+                qrScanned = qrScanner.detect_and_decode(frame, return_detections=True)
+                x1, y1, x2, y2 = qrScanned[1][0].get('bbox_xyxy')
+                qrData = qrScanned[0][0]
+                for i in range(len(col_qrData)):
+                    if col_qrData[i] == qrData:
+                        winsound.Beep(2740, 220)
+                        print(course_text_.format(qrData))
+                        x1 = int(x1) - coded_qr_padding
+                        y1 = int(y1) - coded_qr_padding
+                        x2 = int(x2) + coded_qr_padding
+                        y2 = int(y2) + coded_qr_padding
+                        cropped_qr = frame[y1:y2, x1:x2]
+                        cropped_qr = cv.resize(cropped_qr, (int(window_width*0.186), int(window_width*0.186)))
+                        cv.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 10)
+                        frame_preview = ImageTk.PhotoImage(Image.fromarray(frame))
+                        camera_preview.configure(image=frame_preview)
+                        camera_preview.image=frame_preview
+                        camera_preview.update()
+
+                        
+                        name_text_view.configure(text=name_text_.format(col_lastName[i],
+                                                                        col_firstName[i],
+                                                                        col_middleName[i]),
+                                                fg_color="#C93535",
+                                                text_color="#ffffff")
+                        name_text_view.update()
+
+                        year_text_view.configure(text=year_text_.format(col_year[i]),
+                                                fg_color="#C93535",
+                                                text_color="#ffffff")
+                        year_text_view.update()
+
+                        course_text_view.configure(text=course_text_.format(col_course[i]),
+                                                fg_color="#C93535",
+                                                text_color="#ffffff")
+                        course_text_view.update()
+                        
+                        ticket_valid_label.configure(text="TICKET VALID",
+                                                text_color="#000000",
+                                                fg_color="#39ff53")
+                        ticket_valid_label.update()
+
+                        cropped_qr = ImageTk.PhotoImage(Image.fromarray(cropped_qr))
+                        captured_qr_view.configure(image=cropped_qr)
+                        captured_qr_view.update()
+
+                        cv.waitKey(1500)
+                        break
+                    elif i == len(col_qrData)-1:
+                        winsound.Beep(320, 250)
+                        name_text_view.configure(text="INVALID",
+                                                text_color="#ff1414",
+                                                fg_color="#000000" )
+                        name_text_view.update()
+
+                        year_text_view.configure(text="INVALID",
+                                                text_color="#ff1414",
+                                                fg_color="#000000")
+                        year_text_view.update()
+
+                        course_text_view.configure(text="INVALID",
+                                                text_color="#ff1414",
+                                                fg_color="#000000")
+                        course_text_view.update()
+
+                        ticket_valid_label.configure(text="TICKET INVALID",
+                                                text_color="#000000",
+                                                fg_color="#ff1414")
+                        ticket_valid_label.update()
+        except:
+            pass
+
+
 def scanButton():
     global qrData
     try:
         qrScanned = qrScanner.detect_and_decode(frame, return_detections=True)
-        if qrScanned[0] != None:
+        if qrScanned[0].get('confidence') >= .20:
             qrData = qrScanned[0][0]
             x1, y1, x2, y2 = qrScanned[1][0]['bbox_xyxy']
             for i in range(len(col_qrData)):
